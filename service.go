@@ -2,14 +2,11 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"crypto/rand"
 	"encoding/gob"
 	"encoding/hex"
-	"encoding/json"
 	"github.com/allegro/bigcache"
 	"log"
-	"net/http"
 	"time"
 )
 
@@ -110,17 +107,13 @@ func GenerateRandomBytes(n int) ([]byte, error) {
 	return b, nil
 }
 
-// GenerateRandomString returns a URL-safe, base64 encoded
+// GenerateRandomString returns a URL-safe, hex encoded
 // securely generated random string.
 // It will return an error if the system's secure random
 // number generator fails to function correctly, in which
 // case the caller should not continue.
 func GenerateRandomString(s int) (string, error) {
-	bytes, err := GenerateRandomBytes(s)
-	res := hex.EncodeToString(bytes)
+	randomBytes, err := GenerateRandomBytes(s)
+	res := hex.EncodeToString(randomBytes)
 	return res[:8] + "-" + res[8:12] + "-" + res[12:16] + "-" + res[16:20] + "-" + res[20:24] + "-" + res[24:], err
-}
-
-func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
-	return json.NewEncoder(w).Encode(response)
 }
