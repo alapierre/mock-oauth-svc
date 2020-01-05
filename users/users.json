@@ -1,0 +1,31 @@
+{
+  "clients": [
+    {
+      "client": "client",
+      "secret": "secret",
+      "grant_type": [
+        "password"
+      ],
+      "scope": [
+        "api"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "login": "admin",
+      "password": "admin",
+      "authorities": [
+        "ROLE_ADMIN",
+        "ROLE_SUPERUSER"
+      ]
+    },
+    {
+      "login": "user",
+      "password": "user",
+      "authorities": [
+        "ROLE_USER"
+      ]
+    }
+  ]
+}

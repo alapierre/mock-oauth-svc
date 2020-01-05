@@ -28,6 +28,7 @@ This project use Go-kit and Allegro BigCache.
 
 ### TODO 
 
+- users and client details from json file
 - docker container
 - verify password == username
 - refresh token suport
