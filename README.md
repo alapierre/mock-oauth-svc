@@ -1,6 +1,6 @@
 # mock-oauth-svc
 
-Simple oAuth mock server for microservices integration test.
+Externally fast (less than 2ms response time) and simple oAuth mock server for microservices integration test.
 
 It supports Basic Auth for clients - you can set it by environment variables AUTH_CLIENT and AUTH_SECRET. 
 If not, it will use default credentials client:secret. 
