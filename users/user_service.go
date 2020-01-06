@@ -2,10 +2,16 @@ package users
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"io/ioutil"
+	"log"
 	"os"
 )
+
+type UserService interface {
+	// wykonuje autentykację użytkownika i zwraca jego uprawnienia
+	AuthenticateUser(login, password string) ([]string, error)
+}
 
 type User struct {
 	Login       string   `json:"login"`
@@ -23,6 +29,17 @@ type Client struct {
 type ServerConfig struct {
 	Clients []Client
 	Users   []User
+}
+
+var Unauthorized = errors.New("unauthorized error")
+
+type UserServiceSimple struct{}
+
+func (UserServiceSimple) AuthenticateUser(login, password string) ([]string, error) {
+	if login == password {
+		return []string{"ROLE_ADMIN", "ROLE_SUPERUSER"}, nil
+	}
+	return nil, Unauthorized
 }
 
 type UserServiceFileImpl struct {
@@ -56,7 +73,8 @@ func NewServiceFromFile(fileName string) (*UserServiceFileImpl, error) {
 func (svc *UserServiceFileImpl) AuthenticateUser(login, password string) ([]string, error) {
 	user, ok := svc.Users[login+":"+password]
 	if !ok {
-		return nil, fmt.Errorf("cannot find user %s", user)
+		log.Printf("cannot find user %s", user)
+		return nil, Unauthorized
 	}
 	return user.Authorities, nil
 }

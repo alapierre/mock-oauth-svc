@@ -3,12 +3,12 @@
 Simple oAuth mock server for microservices integration test.
 
 It supports Basic Auth for clients - you can set it by environment variables AUTH_CLIENT and AUTH_SECRET. 
-If not, it will use default client:secret. 
+If not, it will use default credentials client:secret. 
 
-Main propose for this project is to emulate Spring Boot oAuth Server, so it should return erectly the same response 
+Main propose for this project is to emulate Spring Boot oAuth Server, so it should return exactly the same response 
 as Spring.
 
-For any user when password is equale to login name, this server will return new oAuth token
+For any user with password equals to login name, this server will return new oAuth token. Grant type is ignored.
 
 ```
 GET http://localhost:9005/oauth/token?grant_type=password&username=admin&password=admin
@@ -28,8 +28,7 @@ This project use Go-kit and Allegro BigCache.
 
 ### TODO 
 
-- users and client details from json file
-- docker container
-- verify password == username
+- users and client details from json file (almost ready)
+- docker container (coming soon)
 - refresh token suport
-- gRPC endpoints
+- gRPC endpoints (preparing on branch)

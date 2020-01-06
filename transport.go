@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/go-kit/kit/endpoint"
+	"mock-oauth-svr/users"
 	"net/http"
 )
 
@@ -43,6 +44,12 @@ func makeTokenEndpoint(svc OAuthService) endpoint.Endpoint {
 		req := request.(tokenRequest)
 		token, err := svc.Token(req.GrantType, req.User, req.Password)
 		if err != nil {
+			if err == users.Unauthorized {
+				return RestError{
+					Error:            "bad_credentials",
+					ErrorDescription: "User or password incorrect",
+				}, nil
+			}
 			return nil, err
 		}
 		return token, nil
@@ -88,12 +95,4 @@ func encodeResponse(_ context.Context, w http.ResponseWriter, response interface
 	headers.Set("Expires", "0")
 	headers.Set("X-Frame-Options", "DENY")
 	return json.NewEncoder(w).Encode(response)
-}
-
-func MakeError(r *http.Request) RestError {
-	return RestError{
-		Error:            "invalid_token",
-		ErrorDescription: "Token was not recognised",
-	}
-
 }

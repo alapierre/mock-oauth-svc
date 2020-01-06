@@ -5,6 +5,7 @@ import (
 	"github.com/go-kit/kit/auth/basic"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"log"
+	users "mock-oauth-svr/users"
 	"net/http"
 	"os"
 )
@@ -29,7 +30,8 @@ func main() {
 		log.Println("Using default secret for BASIC-AUTH")
 	}
 
-	var svc OAuthService = oAuthService{}
+	var usvc = users.UserServiceSimple{}
+	var svc OAuthService = NewOAuthService(usvc)
 
 	tokenHandler := httptransport.NewServer(
 		//makeTokenEndpoint(svc),

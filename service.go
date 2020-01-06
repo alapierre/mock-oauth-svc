@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"github.com/allegro/bigcache"
 	"log"
+	"mock-oauth-svr/users"
 	"time"
 )
 
@@ -26,9 +27,22 @@ type OAuthService interface {
 	CheckToken(token string) (*TokenInfo, error)
 }
 
-type oAuthService struct{}
+type oAuthService struct {
+	users users.UserService
+}
 
-func (oAuthService) Token(grantType, username, password string) (*Token, error) {
+func NewOAuthService(u users.UserService) OAuthService {
+	return &oAuthService{
+		users: u,
+	}
+}
+
+func (svc *oAuthService) Token(grantType, username, password string) (*Token, error) {
+
+	auth, err := svc.users.AuthenticateUser(username, password)
+	if err != nil {
+		return nil, err
+	}
 
 	token, err := GenerateRandomString(16)
 
@@ -38,14 +52,18 @@ func (oAuthService) Token(grantType, username, password string) (*Token, error) 
 
 	stamp := time.Now().Unix() + 86_400
 
-	cache.Set(token, SerializeStruct(TokenInfo{
+	err = cache.Set(token, SerializeStruct(TokenInfo{
 		UserName:    username,
 		Active:      true,
 		Exp:         stamp,
 		ClientId:    "",
 		Scope:       []string{"api"},
-		Authorities: []string{"ROLE_ADMIN", "ROLE_SUPERUSER"},
+		Authorities: auth,
 	}))
+
+	if err != nil {
+		log.Printf("Error (%v) when storing token in cache for user %s", err, username)
+	}
 
 	return &Token{
 		AccessToken:  token,
