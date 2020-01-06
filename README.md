@@ -21,6 +21,8 @@ services:
      - "9005:9005"
 ``` 
 
+## Usage
+
 For any user with password equals to login name, this server will return new oAuth token. Grant type is ignored.
 
 ```
