@@ -1,0 +1,7 @@
+version: '3'
+services:
+  auth:
+#    build: .
+    image: lapierre/mock-oauth:0.0.1
+    ports:
+     - "9005:9005"
